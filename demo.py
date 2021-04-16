@@ -47,7 +47,8 @@ def load_model():
     custom_objects = {'BilinearUpSampling2D': BilinearUpSampling2D, 'depth_loss_function': None}
 
     # Load model into GPU / CPU
-    return load_model(args.model, custom_objects=custom_objects, compile=False)
+    print(args.model)
+    return load_model(str(args.model), custom_objects=custom_objects, compile=False)
 
 # Function timing
 ticTime = time.time()
