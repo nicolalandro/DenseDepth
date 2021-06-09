@@ -18,3 +18,15 @@ python3 demo.py
 <p align="center">
   <img style="max-width:500px" src="https://s3-eu-west-1.amazonaws.com/densedepth/densedepth_results_04.jpg" alt="RGBD Demo">
 </p>
+
+## Failed ONNX test
+```
+python3 model2onnx.py
+python3 check_onnx_model.py
+```
+
+## Torch test
+```
+cd PyTorch
+load_weight_from_keras.py
+```

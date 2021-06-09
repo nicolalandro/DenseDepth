@@ -19,12 +19,12 @@ import torch.nn as nn
 from torchvision import models
 import torch.nn.functional as F
 
-from pytorch_model import PTModel
+from PyTorch.model import PTModel
 
 # Argument Parser
 parser = argparse.ArgumentParser(description='High Quality Monocular Depth Estimation via Transfer Learning')
 parser.add_argument('--model', default='../nyu.h5', type=str, help='Trained Keras model file.')
-parser.add_argument('--input', default='../examples/*.png', type=str, help='Input filename or folder.')
+parser.add_argument('--input', default='../examples/119_image.png', type=str, help='Input filename or folder.')
 args = parser.parse_args()
 
 # Custom object needed for inference and training

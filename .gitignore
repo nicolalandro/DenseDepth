@@ -5,3 +5,5 @@
 /.vscode
 *.jpg
 *.obj
+*.pyc
+*.onnx
