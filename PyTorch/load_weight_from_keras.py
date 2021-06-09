@@ -86,6 +86,9 @@ for name, param in pytorch_model.named_parameters():
 pytorch_model.load_state_dict(keras_state_dict)
 pytorch_model.eval()
 
+#print('save torch weights...')
+#torch.save(pytorch_model.state_dict(),'nyu.pth')
+#print('...end save torch weights')
 
 def my_DepthNorm(x, maxDepth):
     return maxDepth / x
