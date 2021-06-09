@@ -26,7 +26,14 @@ python3 check_onnx_model.py
 ```
 
 ## Torch test
+* transform weight to torch (edit the file)
 ```
 cd PyTorch
-load_weight_from_keras.py
+python3 load_weight_from_keras.py
 ```
+* use torch only
+```
+# download or generate torch weight nyu.pth into the PyTorch folder
+python3 demo_torch.py
+```
+
