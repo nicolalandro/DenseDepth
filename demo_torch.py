@@ -30,5 +30,11 @@ with torch.no_grad():
 
 output = np.clip(my_DepthNorm(predictions.numpy(), maxDepth=maxDepth), minDepth, maxDepth) / maxDepth
 
-plt.imshow(output[0,0,:,:])
+fig, axes = plt.subplots (1,2)
+axes[0].imshow(np.asarray(pil_image))
+axes[0].set_title("RGB")
+axes[1].imshow(output[0,0,:,:])
+axes[1].set_title("Deep Map")
 plt.show()
+
+
