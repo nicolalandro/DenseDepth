@@ -1,10 +1,10 @@
 import argparse
 import torch
-import glob
+from torchvision.transforms import ToTensor
 import numpy as np
+from PIL import Image
 from matplotlib import pyplot as plt
 
-from utils import load_images
 from PyTorch.model import PTModel
 
 parser = argparse.ArgumentParser(description='High Quality Monocular Depth Estimation via Transfer Learning')
@@ -21,9 +21,9 @@ model = PTModel().float()
 model.load_state_dict(torch.load(args.model))
 model.eval()
 
-inputs = load_images( glob.glob(args.input) ).astype('float32')
-pytorch_input = torch.from_numpy(inputs[0,:,:,:]).permute(2,0,1).unsqueeze(0)
-images = pytorch_input[0,:,:,:].unsqueeze(0)
+pil_image = Image.open(args.input)
+torch_image = ToTensor()(pil_image)
+images = torch_image.unsqueeze(0)
 
 with torch.no_grad():
     predictions = model(images)
