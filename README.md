@@ -1,3 +1,5 @@
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/nicolalandro/DenseDepth/blob/master/DenseDepth_torch.ipynb)
+
 # Monocular Depth Estimation
 This is a fork of [DenseDepth](https://github.com/ialhashim/DenseDepth).
 
