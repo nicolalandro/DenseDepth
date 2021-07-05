@@ -14,4 +14,4 @@ this folder is the code to include the model as meshroom node
 * Restart Meshroom
 * add in your flow as DeepMap block
 
-![Sample](meshroom/connection_schema.png)
+![Sample](connection_schema.png)
