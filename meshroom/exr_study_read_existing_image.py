@@ -4,7 +4,9 @@ import Imath
 import array
 from matplotlib import pyplot as plt
 
-path = '/media/mint/Barracuda/Photogrammetry/meshroom/MeshroomCache/DepthMap/5a06ca41e99e8096ad3901fda8d4eef59c9a6f9c/30774549_depthMap.exr'
+# path = '/media/mint/Barracuda/Photogrammetry/meshroom/MeshroomCache/DepthMap/5a06ca41e99e8096ad3901fda8d4eef59c9a6f9c/30774549_depthMap.exr'
+path = '/media/mint/Barracuda/Photogrammetry/meshroom/MeshroomCache/PrepareDenseScene/48a38e33f2e1426a2185832d88dacd9fb0cb030d/8061001.exr'
+# path = '/media/mint/Barracuda/Photogrammetry/meshroom/MeshroomCache/DenseDepthDenseMap/6d69cf3f1664e4766c7ee1337487a024795d58dd/8061001_depthMap.exr'
 
 exr_opened = OpenEXR.InputFile(path)
 

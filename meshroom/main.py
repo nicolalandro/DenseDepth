@@ -7,11 +7,24 @@ from torchvision.transforms import ToTensor
 
 import numpy as np
 from PIL import Image
-
+import Imath
+import OpenEXR
+import argparse
+from io import StringIO
+import json
+import os
 
 minDepth = 10
 maxDepth = 1000
 model_url = 'https://github.com/nicolalandro/DenseDepth/releases/download/0.1/nyu.pth'
+
+parser = argparse.ArgumentParser(description='DenseDepth for Meshroom.')
+parser.add_argument('--input', help='input folder')
+parser.add_argument('--preparedDenseScene', help='prepared exp folder')
+parser.add_argument('--output', help='output folder')
+
+
+args = parser.parse_args()
 
 def main():
     model = PTModel().float()
@@ -19,19 +32,51 @@ def main():
     model.eval()
     # load to gpu if cuda
 
+    # Read args
+    with open(args.input, 'r') as json_file:
+        input_json = json.load(json_file)
+
     # for each image in folder
-    #   load to gpu if cuda
-    pil_image = Image.open(args.input)
-    torch_image = ToTensor()(pil_image)
-    images = torch_image.unsqueeze(0)
+    max_length = len(input_json['views'])
+    for i, data in enumerate(input_json['views']):
+        print(f'{i+1}/{max_length}')
+        image_path = data['path']
 
-    with torch.no_grad():
-        predictions = model(images) # if cuda use a batch of images to speed up the process
+        pil_image = Image.open(image_path)
+        torch_image = ToTensor()(pil_image)
+        images = torch_image.unsqueeze(0)
 
-    output = np.clip(my_DepthNorm(predictions.numpy(),
-                     maxDepth=maxDepth), minDepth, maxDepth) / maxDepth
-    depth = output[0, 0, :, :]
-    # store .exr and .log file
+        # load to gpu if cuda
+
+        with torch.no_grad():
+            # if cuda use a batch of images to speed up the process
+            predictions = model(images)
+
+        output = np.clip(my_DepthNorm(predictions.numpy(),
+                        maxDepth=maxDepth), minDepth, maxDepth) / maxDepth
+        depth = output[0, 0, :, :]
+
+        # store .exr and .log file
+        npImage = np.squeeze(depth)
+        size = depth.shape
+        exrHeader = OpenEXR.Header(size[1], size[0])
+
+        exrHeader['channels'] = {
+            "Y": Imath.Channel(
+                Imath.PixelType(Imath.PixelType.FLOAT),
+                1,
+                1,
+            )
+        }
+        exrHeader['AliceVision:downscale'] = 2
+        exrHeader['AliceVision:maxDepth'] = maxDepth
+        exrHeader['AliceVision:minDepth'] = minDepth
+
+        output_path = os.path.join(args.output, data['viewId'] + '_depthMap.exr')
+        exrOut = OpenEXR.OutputFile(output_path, exrHeader)
+        Y = (npImage[:, :]).astype(np.float32).tobytes()
+        exrOut.writePixels({'Y': Y})
+        exrOut.close()
 
 
 def my_DepthNorm(x, maxDepth):
