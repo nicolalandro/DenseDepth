@@ -4,7 +4,7 @@ from torchvision.transforms import ToTensor
 import numpy as np
 from PIL import Image
 from matplotlib import pyplot as plt
-from matplotlib.collections import PolyCollection
+from mpl_toolkits.mplot3d import Axes3D, art3d
 from skimage.transform import resize
 from scipy import ndimage
 import math
@@ -67,6 +67,8 @@ def create_obj(img, objPath='model.obj', mtlPath='model.mtl', matName='colored',
         ids = np.zeros((img.shape[1], img.shape[0]), int)
         vid = 1
 
+        vertices = []
+
         for u in range(0, w):
             for v in range(h-1, -1, -1):
 
@@ -88,6 +90,7 @@ def create_obj(img, objPath='model.obj', mtlPath='model.mtl', matName='colored',
                 x = -t*x*norm
                 y = t*y*norm
                 z = -t*z*norm
+                vertices.append([x, y, z])
 
                 f.write("v " + str(x) + " " + str(y) + " " + str(z) + "\n")
 
@@ -95,6 +98,8 @@ def create_obj(img, objPath='model.obj', mtlPath='model.mtl', matName='colored',
             for v in range(0, img.shape[0]):
                 f.write("vt " + str(u/img.shape[1]) +
                         " " + str(v/img.shape[0]) + "\n")
+
+        faces = []
 
         for u in range(0, img.shape[1]-1):
             for v in range(0, img.shape[0]-1):
@@ -109,54 +114,18 @@ def create_obj(img, objPath='model.obj', mtlPath='model.mtl', matName='colored',
 
                 f.write("f " + vete(v1, v1) + " " +
                         vete(v2, v2) + " " + vete(v3, v3) + "\n")
+                faces.append([v1-1, v2-1, v3-1])
                 f.write("f " + vete(v3, v3) + " " +
                         vete(v2, v2) + " " + vete(v4, v4) + "\n")
+                faces.append([v3-1, v2-1, v4-1])
+
+        return np.array(vertices), np.array(faces)
 
 
-create_obj(depth)
-
-
-def edges(d):
-    dx = ndimage.sobel(d, 0)  # horizontal derivative
-    dy = ndimage.sobel(d, 1)  # vertical derivative
-    return np.abs(dx) + np.abs(dy)
-
-
-def worldCoords(width, height):
-    hfov_degrees, vfov_degrees = 57, 43
-    hFov = math.radians(hfov_degrees)
-    vFov = math.radians(vfov_degrees)
-    cx, cy = width/2, height/2
-    fx = width/(2*math.tan(hFov/2))
-    fy = height/(2*math.tan(vFov/2))
-    xx, yy = np.tile(range(width), height), np.repeat(range(height), width)
-    xx = (xx-cx)/fx
-    yy = (yy-cy)/fy
-    return xx, yy
-
-
-def posFromDepth(depth, rgb):
-    rgb_width, rgb_height = rgb.shape[1], rgb.shape[0]
-    xx, yy = worldCoords(width=rgb_width//2, height=rgb_height//2)
-    length = depth.shape[0] * depth.shape[1]
-
-    depth[edges(depth) > 0.3] = 1e6  # Hide depth edges
-    z = depth.reshape(length)
-
-    return np.dstack((xx*z, yy*z, z)).reshape((length, 3))
-
+v, f = create_obj(depth)
 
 # image
 rgb = np.asarray(pil_image)
-# RGBD dimensions
-width, height = depth.shape[1], depth.shape[0]
-# Reshape
-points = posFromDepth(depth.copy(), rgb.copy())
-colors = resize(rgb, (height, width)).reshape((height * width, 3))
-# Flatten and convert to float32
-pos = points.astype('float32')
-col = colors.reshape(height * width, 3).astype('float32') * 255
-
 
 # show
 fig, axes = plt.subplots(2, 2)
@@ -172,6 +141,18 @@ axes[1][1].axis('off')
 
 ax = fig.add_subplot(2, 1, 2, projection='3d')
 
-ax.set_title("Point Cloud")
+# C = np.array([1 for _ in range(0, len(f))])
+# norm = plt.Normalize(C.min(), C.max())
+# colors = plt.cm.viridis(norm(C))
+# pc = art3d.Poly3DCollection(v[f], facecolors=colors)
+# ax.add_collection(pc)
+
+# ax.set_xlim([min(a[0] for a in v), max(a[0] for a in v)])
+# ax.set_ylim([min(a[1] for a in v), max(a[1] for a in v)])
+# ax.set_zlim([min(a[2] for a in v), max(a[2] for a in v)])
+# ax.view_init(-30, 90)
+
+
+ax.set_title("3D (open the stored model.obj)")
 
 plt.show()
