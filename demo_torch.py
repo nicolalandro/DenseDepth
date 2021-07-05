@@ -100,8 +100,8 @@ def create_obj(img, objPath='model.obj', mtlPath='model.mtl', matName='colored',
             for v in range(0, img.shape[0]-1):
 
                 v1 = ids[u, v]
-                v2 = ids[u+1, v]
-                v3 = ids[u, v+1]
+                v3 = ids[u+1, v]
+                v2 = ids[u, v+1]
                 v4 = ids[u+1, v+1]
 
                 if v1 == 0 or v2 == 0 or v3 == 0 or v4 == 0:
