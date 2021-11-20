@@ -170,7 +170,13 @@ uploader = st.file_uploader('Upload your portrait here',type=['jpg','jpeg','png'
 
 if uploader is not None:
     pil_image = Image.open(uploader)
-    image_path, html_string = predict(pil_image)
+    pil_depth, html_string = predict(pil_image)
+
+    col1, col2 = st.columns(2)
+    with col1:
+        st.image(pil_image)
+    with col2:
+        st.image(pil_depth)
 
     components.html(html_string)
     st.markdown(html_string, unsafe_allow_html=True)
