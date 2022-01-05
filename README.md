@@ -1,4 +1,5 @@
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/nicolalandro/DenseDepth/blob/master/DenseDepth_torch.ipynb)
+[![Open Streamlit in HuggingFace spaces](https://img.shields.io/badge/Streamlit-Open%20in%20Spaces-blueviolet)](https://huggingface.co/spaces/z-uo/monocular_depth_estimation)
 
 # Monocular Depth Estimation
 This is a fork of [DenseDepth](https://github.com/ialhashim/DenseDepth).
