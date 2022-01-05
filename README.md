@@ -4,6 +4,9 @@
 # Monocular Depth Estimation
 This is a fork of [DenseDepth](https://github.com/ialhashim/DenseDepth).
 
+<p align="center">
+  <img style="max-width:500px" src="examples/StreamlitDemo.png" alt="Streamlit Demo">
+</p>
 
 ## Requirements
 ```
